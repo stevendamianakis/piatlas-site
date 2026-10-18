@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 <a class="skip" href="#matrix">Skip to the matrix</a>
@@ -65,9 +65,6 @@
   <section class="hero" id="overview" aria-labelledby="paper-title">
     <div class="page">
       <h1 id="paper-title">SoK: PIAtlas: Decomposing the Unbounded Prompt Injection Attack Space</h1>
-      <p class="authors"><span>Stavros Damianakis</span> <span>Konstantinos Psounis</span></p>
-      <p class="affil">University of Southern California</p>
-      <p class="emails"><a href="mailto:sdamiana@usc.edu">sdamiana@usc.edu</a> <a href="mailto:kpsounis@usc.edu">kpsounis@usc.edu</a></p>
       <div class="buttons">
         <a class="btn btn-primary" href="#matrix">Explore the matrix</a>
         <a class="btn" href="#cite">
@@ -89,7 +86,7 @@
   <section class="intro" aria-label="Summary" data-section="overview">
     <div class="page narrow">
       <div class="tldr">
-        <h2 class="eyebrow">In brief</h2>
+        <h2 class="eyebrow">Summary</h2>
         <p>PIAtlas classifies prompt-injection attacks along one axis: how the injected instruction is constructed to subvert the model. Six classes, one per subversion mechanism, divide into 34 techniques and 131 sub-techniques, each with a worked example. Mapping 8,663 records of PICorpus, a corpus of 444,498 attack instructions from twenty public datasets, shows that attacks combine several techniques from only a few mechanisms, and that widely used benchmarks under-sample the mechanisms adaptive attackers favor.</p>
       </div>
       <h2 class="eyebrow abstract-label">Abstract</h2>
@@ -129,7 +126,7 @@
     </div>
     <div class="page">
       <p class="legend">
-        <span><span class="wild-dot" aria-hidden="true">●</span> named in a disclosed incident</span>
+        <span><span class="wild-dot" aria-hidden="true"></span> named in a disclosed incident</span>
         <span><span class="key-bar" aria-hidden="true"></span> shows sub-techniques</span>
         <span>examples use one benign stand-in: an email assistant told to send notes to <code>mallory@example.com</code></span>
         <span>gaps in IDs are deliberate</span>
@@ -215,7 +212,6 @@
 
 <footer class="footer">
   <div class="page">
-    <p>PIAtlas · Stavros Damianakis and Konstantinos Psounis, University of Southern California</p>
     <p>Definitions, examples, tables and the figure are from the paper; items marked <em>Illustration</em> were added for this page.</p>
   </div>
 </footer>
@@ -238,7 +234,7 @@
 
 <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
 
-<script src="taxonomy.js?v=3"></script>
-<script src="app.js?v=3"></script>
+<script src="taxonomy.js?v=4"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>

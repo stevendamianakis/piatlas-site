@@ -74,8 +74,48 @@
   }
 
   const displayExample = ex => /^[a-z]/.test(ex) ? ex[0].toUpperCase() + ex.slice(1) : ex;
-  const wildMark = e => isWild(e)
-    ? '<span class="wild" aria-hidden="true">●</span><span class="sr-only">, named in a disclosed incident</span>' : '';
+  // Hyphenation points for long capitalized words. Browsers do not auto-hyphenate capitalized words,
+  // so fitNames() adds these soft hyphens to a word only when the word alone is wider than its cell.
+  const SOFT = Object.fromEntries([
+    'Trans|for|ma|tion', 'Re|spon|si|bil|ity', 'Re|struc|tur|ing', 'Se|ri|al|iza|tion', 'Trans|po|si|tion',
+    'Con|tra|dic|tion', 'Clar|ifi|ca|tion', 'Frag|men|ta|tion', 'Hy|po|thet|icals', 'Ma|nipu|la|tion',
+    'Hy|po|thet|ical', 'Per|tur|ba|tion', 'Un|re|strict|ed', 'Su|per|ses|sion', 'De|clar|ative',
+    'Sup|pres|sion', 'Dis|trac|tors', 'Coun|ter|feit', 'Con|di|tion|al', 'In|struc|tion', 'Rec|ip|roc|ity',
+    'Re|place|ment', 'Ob|fus|ca|tion', 'Util|itar|ian', 'En|dorse|ment', 'En|gi|neer|ing', 'Con|se|quence',
+    'Com|po|si|tion', 'Repe|ti|tion', 'De|lim|it|ers', 'Ob|li|ga|tion', 'Struc|tur|al', 'Ho|mo|glyphs',
+    'Fab|ri|cat|ed', 'Pseu|do|code', 'Struc|tured', 'Simu|la|tion', 'Po|si|tion|al', 'Le|git|imacy',
+    'Im|por|tance', 'Com|mit|ment',
+    'Em|bed|ding', 'Char|ac|ter', 'Exe|cu|tion', 'Switch|ing', 'Re|word|ing', 'Sur|ro|gate',
+    'Au|thor|ity', 'Emo|tion|al', 'Chal|lenge', 'Rea|son|ing', 'Ex|cep|tion', 'Cog|ni|tive',
+    'Nor|mal|ity', 'Re|quest|er', 'Leet|speak', 'Emer|gen|cy', 'As|sis|tant', 'In|cen|tive',
+    'Hyp|oc|risy', 'Clas|si|cal', 'Al|ter|nate', 'In|vis|ible', 'Re|trieved', 'Eu|phe|mism',
+    'Ter|mi|nal', 'Co|er|cion', 'Over|load', 'Bound|ary', 'Dia|logue', 'Docu|ment', 'Lan|guage',
+    'In|di|rect', 'Al|lu|sion', 'Meta|da|ta', 'Re|search', 'Re|quired', 'Ver|ba|tim', 'Em|pha|sis',
+    'Phras|ing', 'Sce|nar|io', 'Busi|ness', 'Sym|pa|thy', 'En|cod|ing', 'Ar|gu|ment', 'Of|fi|cial',
+    'Se|cu|rity', 'Scar|city', 'Stan|dard', 'Dis|guise', 'In|vert|ed', 'Func|tion', 'Re|sponse',
+    'Capi|tals', 'Pho|net|ic', 'Vari|able', 'Se|man|tic', 'Spoof|ing', 'Script|ed', 'Flat|tery',
+    'Se|quence', 'Over|ride', 'Dead|line', 'Com|mand'
+  ].map(w => [w.replace(/\|/g, ''), w.replace(/\|/g, '\u00AD')]));
+  const measure = document.createElement('canvas').getContext('2d');
+  function fitNames() {
+    $$('.col-name, .cell .nm', grid).forEach(nm => {
+      const name = nm.dataset.name;
+      if (!name || !nm.offsetParent) return;
+      const avail = nm.clientWidth;
+      if (!avail) return;
+      const cs = getComputedStyle(nm);
+      measure.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+      // measure a word together with an attached hyphen ("Structured-"), where the line can break
+      const text = name.replace(/\b([A-Z][a-z]{6,})\b(-?)/g, (m, w, hy) =>
+        (SOFT[w] && measure.measureText(w + hy).width > avail ? SOFT[w] : w) + hy);
+      if (nm.textContent !== text) nm.textContent = text;
+    });
+  }
+
+  // incident marker: a dot in the cell's top-right corner of the matrix, inline after names in lists
+  const WILD_SR = '<span class="sr-only">, named in a disclosed incident</span>';
+  const wildDot = e => isWild(e) ? '<span class="wild" aria-hidden="true"></span>' + WILD_SR : '';
+  const wildMark = e => isWild(e) ? '<span class="wild-inline" aria-hidden="true"></span>' + WILD_SR : '';
 
   // ---------------------------------------------------------------- matrix
   function renderMatrix() {
@@ -83,7 +123,7 @@
       <section class="col" data-c="${c.id}" aria-labelledby="h-${c.id}">
         <div class="col-head">
           <a class="col-title" id="h-${c.id}" href="#${c.id}" data-id="${c.id}">
-            <span class="badge">${c.id}</span><span class="col-name">${esc(c.name)}</span>
+            <span class="badge">${c.id}</span><span class="col-name" data-name="${esc(c.name)}">${esc(c.name)}</span>
           </a>
           <div class="col-count">${c.children.length} techniques</div>
         </div>
@@ -95,13 +135,13 @@
     const n = t.children.length;
     const subs = n ? `
       <ol class="subs" id="subs-${t.id}" hidden>${t.children.map(s => `
-        <li><a class="cell sub" href="#${s.id}" data-id="${s.id}"><span class="cid">${s.id.split('.')[2]}</span><span class="nm">${esc(s.name)}${wildMark(s)}</span></a></li>`).join('')}
+        <li><a class="cell sub${isWild(s) ? ' has-wild' : ''}" href="#${s.id}" data-id="${s.id}"><span class="cid">${s.id.split('.')[2]}</span><span class="nm" data-name="${esc(s.name)}">${esc(s.name)}</span>${wildDot(s)}</a></li>`).join('')}
       </ol>` : '';
     const toggle = n ? `<button type="button" class="tgl" aria-expanded="false" aria-controls="subs-${t.id}">${CHEVRON}</button>` : '';
     return `
       <li class="tech" data-id="${t.id}">
         <div class="tech-cell">
-          <a class="cell" href="#${t.id}" data-id="${t.id}"><span class="cid">${t.id.split('.')[1]}</span><span class="nm">${esc(t.name)}${wildMark(t)}</span></a>${toggle}
+          <a class="cell${isWild(t) ? ' has-wild' : ''}" href="#${t.id}" data-id="${t.id}"><span class="cid">${t.id.split('.')[1]}</span><span class="nm" data-name="${esc(t.name)}">${esc(t.name)}</span>${wildDot(t)}</a>${toggle}
         </div>${subs}
       </li>`;
   }
@@ -110,18 +150,24 @@
   const forcedOpen = new Set();
 
   function applyExpansion() {
+    const openCols = new Set();
     $$('.tech', grid).forEach(li => {
       const btn = $('.tgl', li);
       if (!btn) return;
       const t = byId.get(li.dataset.id);
       const open = userOpen.has(t.id) || forcedOpen.has(t.id);
       const n = t.children.length;
+      if (open) openCols.add(classOf(t.id));
       li.classList.toggle('open', open);
       btn.setAttribute('aria-expanded', String(open));
       btn.setAttribute('aria-label', `${open ? 'Hide' : 'Show'} ${n} sub-technique${n > 1 ? 's' : ''} of ${t.name}`);
       btn.title = open ? 'Hide sub-techniques' : 'Show sub-techniques';
       $('.subs', li).hidden = !open;
     });
+    // columns with open sub-techniques are twice as wide; style.css sizes the cells so they fit
+    grid.style.setProperty('--open-cols', String(openCols.size));
+    frame.classList.toggle('wide', openCols.size > 0);
+    fitNames();
     updateScrollHints();
   }
 
@@ -717,6 +763,7 @@
   });
   $('#show-ids').addEventListener('change', ev => {
     grid.classList.toggle('show-ids', ev.target.checked);
+    fitNames();
     try { localStorage.setItem('piatlas-ids', ev.target.checked ? '1' : '0'); } catch (err) { /* ignore */ }
   });
 
@@ -771,7 +818,13 @@
   });
 
   scroller.addEventListener('scroll', updateScrollHints, { passive: true });
-  window.addEventListener('resize', updateScrollHints);
+  let fitTimer = null;
+  window.addEventListener('resize', () => {
+    updateScrollHints();
+    clearTimeout(fitTimer);
+    fitTimer = setTimeout(fitNames, 120);
+  });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNames);
   window.addEventListener('hashchange', onHash);
 
   initBuilder();

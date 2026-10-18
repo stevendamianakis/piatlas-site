@@ -149,8 +149,12 @@ section[id], [id="matrix"] { scroll-margin-top: 12px; }
   color: var(--ink-3); margin-bottom: 12px;
 }
 .hero h1 { font-size: clamp(26px, 3.4vw, 38px); font-weight: 700; max-width: 22ch; text-wrap: balance; }
-.authors { margin-top: 14px; font-size: 16px; font-weight: 500; }
-.authors .sep { margin: 0 4px; color: var(--ink-3); }
+.authors { margin-top: 14px; font-size: 17px; font-weight: 600; }
+.authors a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.authors a:hover { border-bottom-color: var(--ink); }
+.authors .sep { margin: 0 8px; color: var(--ink-3); }
+.affil { margin-top: 4px; font-size: 14.5px; color: var(--ink-2); }
+.emails { margin-top: 2px; font-family: var(--mono); font-size: 12.5px; color: var(--ink-3); }
 .buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
 .btn {
   display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px;
@@ -563,7 +567,7 @@ details.d-sec[open] > summary::before { transform: rotate(45deg); }
 }
 @media (max-width: 720px) {
   body { font-size: 14.5px; }
-  .wrap, .wide { padding: 0 16px; }
+  .wrap, .wide { padding-left: 16px; padding-right: 16px; }
   .topbar-inner { padding: 0 12px 0 16px; height: 52px; }
   .topnav a { padding: 0 9px; font-size: 13px; }
   .topnav a[data-nav="overview"] { display: none; }

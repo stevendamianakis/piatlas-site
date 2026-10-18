@@ -22,13 +22,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 <a class="skip" href="#matrix">Skip to the matrix</a>
 
 <header class="topbar">
-  <div class="topbar-inner">
+  <div class="page topbar-inner">
     <a class="brand" href="#top" aria-label="PIAtlas, back to top">
       <svg class="logo" viewBox="0 0 24 24" aria-hidden="true">
         <rect x="1" y="3" width="6.5" height="8" rx="1.6" fill="#4588D8"/>
@@ -63,78 +63,61 @@
 
 <main id="top">
   <section class="hero" id="overview" aria-labelledby="paper-title">
-    <div class="wrap hero-grid">
-      <div class="hero-main">
-        <p class="kicker">Systematization of Knowledge · Prompt injection</p>
-        <h1 id="paper-title">SoK: PIAtlas: Decomposing the Unbounded Prompt Injection Attack Space</h1>
-        <p class="authors">
-          <a href="mailto:sdamiana@usc.edu">Stavros Damianakis</a> <span class="sep" aria-hidden="true">·</span> <a href="mailto:kpsounis@usc.edu">Konstantinos Psounis</a>
-        </p>
-        <p class="affil">University of Southern California</p>
-        <p class="emails">sdamiana@usc.edu, kpsounis@usc.edu</p>
-        <div class="buttons">
-          <a class="btn btn-primary" href="#matrix">Explore the matrix</a>
-          <a class="btn" href="#cite">
-            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2.5h10M3 6h10M3 9.5h6M3 13h8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-            BibTeX
-          </a>
-        </div>
+    <div class="page">
+      <h1 id="paper-title">SoK: PIAtlas: Decomposing the Unbounded Prompt Injection Attack Space</h1>
+      <p class="authors"><span>Stavros Damianakis</span> <span>Konstantinos Psounis</span></p>
+      <p class="affil">University of Southern California</p>
+      <p class="emails"><a href="mailto:sdamiana@usc.edu">sdamiana@usc.edu</a> <a href="mailto:kpsounis@usc.edu">kpsounis@usc.edu</a></p>
+      <div class="buttons">
+        <a class="btn btn-primary" href="#matrix">Explore the matrix</a>
+        <a class="btn" href="#cite">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2.5h10M3 6h10M3 9.5h6M3 13h8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          BibTeX
+        </a>
       </div>
       <dl class="stats" aria-label="At a glance">
         <div><dt>classes</dt><dd>6</dd></div>
         <div><dt>techniques</dt><dd>34</dd></div>
         <div><dt>sub-techniques</dt><dd>131</dd></div>
-        <div><dt>attack instructions in PICorpus</dt><dd>444,498</dd></div>
-        <div><dt>records labeled with PIAtlas</dt><dd>8,663</dd></div>
-        <div><dt>disclosed incidents mapped</dt><dd>13</dd></div>
+        <div title="Distinct attack instructions in PICorpus, from twenty public datasets"><dt>attack instructions</dt><dd>444,498</dd></div>
+        <div title="PICorpus records labeled with PIAtlas"><dt>labeled records</dt><dd>8,663</dd></div>
+        <div title="Disclosed incidents, 2024 to 2026"><dt>incidents mapped</dt><dd>13</dd></div>
       </dl>
     </div>
   </section>
 
-  <section class="wrap intro" aria-label="Summary" data-section="overview">
-    <div class="tldr">
-      <h2 class="tldr-label">TL;DR</h2>
-      <p>PIAtlas classifies prompt-injection attacks along one axis: how the injected instruction is constructed to subvert the model. Six classes, one per subversion mechanism, divide into 34 techniques and 131 sub-techniques, each with a worked example. Mapping 8,663 records of PICorpus, a corpus of 444,498 attack instructions from twenty public datasets, shows that attacks combine several techniques from only a few mechanisms, and that widely used benchmarks under-sample the mechanisms adaptive attackers favor.</p>
-    </div>
-    <div class="abstract">
-      <h2>Abstract</h2>
-      <p>Prompt injection is the dominant security risk for large-language-model (LLM) applications and agents, yet the field still lacks a coherent map of how these attacks are constructed. More than twenty public datasets describe prompt injection using incompatible vocabularies, often organized around delivery vector, attacker goal, or generation method. In this Systematization of Knowledge, we present PIAtlas, a taxonomy organized instead around how the injected instruction is constructed to subvert the underlying model. Its six classes, one per subversion mechanism, form the roots of a hierarchy of techniques and sub-techniques that researchers can use to describe attacks consistently and design more systematic evaluations. We derive the taxonomy from how LLMs are trained, prompted, and influenced by human-like framing, and compare it with historical attack data. To ground this comparison, we release PICorpus, to our knowledge the largest license-clean collection of public prompt-injection datasets, and map thousands of its records to PIAtlas under a human-verified protocol. The mapping shows that attacks usually combine several techniques drawn from only a few mechanisms. It also reveals gaps that existing labels obscure: widely used agent benchmarks test only part of the attack space, and adaptive attackers favor mechanisms that curated benchmarks underrepresent. PIAtlas thus provides a common foundation for understanding this attack space, improving benchmark coverage, and guiding red teaming and defenses.</p>
+  <section class="intro" aria-label="Summary" data-section="overview">
+    <div class="page narrow">
+      <div class="tldr">
+        <h2 class="eyebrow">TL;DR</h2>
+        <p>PIAtlas classifies prompt-injection attacks along one axis: how the injected instruction is constructed to subvert the model. Six classes, one per subversion mechanism, divide into 34 techniques and 131 sub-techniques, each with a worked example. Mapping 8,663 records of PICorpus, a corpus of 444,498 attack instructions from twenty public datasets, shows that attacks combine several techniques from only a few mechanisms, and that widely used benchmarks under-sample the mechanisms adaptive attackers favor.</p>
+      </div>
+      <h2 class="eyebrow abstract-label">Abstract</h2>
+      <p class="abstract">Prompt injection is the dominant security risk for large-language-model (LLM) applications and agents, yet the field still lacks a coherent map of how these attacks are constructed. More than twenty public datasets describe prompt injection using incompatible vocabularies, often organized around delivery vector, attacker goal, or generation method. In this Systematization of Knowledge, we present PIAtlas, a taxonomy organized instead around how the injected instruction is constructed to subvert the underlying model. Its six classes, one per subversion mechanism, form the roots of a hierarchy of techniques and sub-techniques that researchers can use to describe attacks consistently and design more systematic evaluations. We derive the taxonomy from how LLMs are trained, prompted, and influenced by human-like framing, and compare it with historical attack data. To ground this comparison, we release PICorpus, to our knowledge the largest license-clean collection of public prompt-injection datasets, and map thousands of its records to PIAtlas under a human-verified protocol. The mapping shows that attacks usually combine several techniques drawn from only a few mechanisms. It also reveals gaps that existing labels obscure: widely used agent benchmarks test only part of the attack space, and adaptive attackers favor mechanisms that curated benchmarks underrepresent. PIAtlas thus provides a common foundation for understanding this attack space, improving benchmark coverage, and guiding red teaming and defenses.</p>
     </div>
   </section>
 
   <section class="matrix-section" id="matrix" aria-labelledby="matrix-title">
-    <div class="wide matrix-head">
-      <div class="matrix-intro">
+    <div class="page">
+      <header class="section-head">
         <h2 id="matrix-title">The PIAtlas matrix</h2>
-        <p class="lede">Each column is a class, one per subversion mechanism, and each cell is a technique. Select a cell for its definition, worked example and the disclosed incidents that used it. The bar on a cell shows its sub-techniques.</p>
+        <p>Each column is a class, one per subversion mechanism, and each cell is a technique. Select a cell for its definition and examples; the bar on its right shows its sub-techniques.</p>
+      </header>
+      <div class="toolbar" role="group" aria-label="Matrix controls">
+        <div class="seg" role="group" aria-label="Sub-techniques">
+          <button type="button" id="expand-all">Expand all</button>
+          <button type="button" id="collapse-all">Collapse all</button>
+        </div>
+        <div class="search">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m10.6 10.6 3.4 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <label class="sr-only" for="q">Search the taxonomy</label>
+          <input id="q" type="search" placeholder="Search, e.g. base64 or F2.T4" autocomplete="off" spellcheck="false" aria-describedby="q-count">
+          <kbd aria-hidden="true">/</kbd>
+        </div>
+        <label class="sr-only" for="incident">Highlight a disclosed incident</label>
+        <select id="incident"><option value="">Highlight an incident…</option></select>
+        <label class="check"><input type="checkbox" id="show-ids"> Show IDs</label>
       </div>
-      <div class="controls" role="group" aria-label="Matrix controls">
-        <div class="ctl">
-          <span class="ctl-label" id="sub-label">Sub-techniques</span>
-          <div class="seg" role="group" aria-labelledby="sub-label">
-            <button type="button" id="expand-all">Expand all</button>
-            <button type="button" id="collapse-all">Collapse all</button>
-          </div>
-        </div>
-        <div class="ctl ctl-search">
-          <label class="ctl-label" for="q">Search</label>
-          <div class="search">
-            <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m10.6 10.6 3.4 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-            <input id="q" type="search" placeholder="e.g. base64 or F2.T4" autocomplete="off" spellcheck="false" aria-describedby="q-count">
-            <kbd aria-hidden="true">/</kbd>
-          </div>
-        </div>
-        <div class="ctl">
-          <label class="ctl-label" for="incident">Highlight an incident</label>
-          <select id="incident"><option value="">None</option></select>
-        </div>
-        <div class="ctl">
-          <span class="ctl-label">Cells</span>
-          <label class="check"><input type="checkbox" id="show-ids"> Show IDs</label>
-        </div>
-      </div>
-    </div>
-    <div class="wide">
       <p id="q-count" class="status" aria-live="polite"></p>
       <div id="case" class="case" hidden></div>
       <nav class="col-jump" id="col-jump" aria-label="Jump to a class column" hidden></nav>
@@ -144,95 +127,118 @@
         <div id="matrix-grid" class="matrix"><p class="loading">Loading the taxonomy…</p></div>
       </div>
     </div>
-    <div class="wide legend">
-      <span><span class="wild-dot" aria-hidden="true">●</span> named in a disclosed incident (Table XXI)</span>
-      <span><span class="key-bar" aria-hidden="true"></span> shows sub-techniques</span>
-      <span>Every worked example encodes the same benign stand-in: an email assistant steered to send the meeting notes to <code>mallory@example.com</code>.</span>
-      <span>Codes are stable, so numbering has deliberate gaps.</span>
+    <div class="page">
+      <p class="legend">
+        <span><span class="wild-dot" aria-hidden="true">●</span> named in a disclosed incident</span>
+        <span><span class="key-bar" aria-hidden="true"></span> shows sub-techniques</span>
+        <span>examples use one benign stand-in: an email assistant told to send notes to <code>mallory@example.com</code></span>
+        <span>gaps in IDs are deliberate</span>
+      </p>
     </div>
   </section>
 
-  <section class="wrap figures" id="figures" aria-labelledby="figures-title">
-    <h2 id="figures-title">Key figures</h2>
+  <section class="figures" id="figures" aria-labelledby="figures-title">
+    <div class="page">
+      <header class="section-head">
+        <h2 id="figures-title">Key figures</h2>
+        <p>One request built six ways, the classes each benchmark tests, and how templates cluster by construction.</p>
+      </header>
 
-    <figure class="fig" id="fig-builder" aria-labelledby="builder-title">
-      <div class="fig-head">
-        <h3 id="builder-title">One request, six constructions</h3>
-        <p>The request stays fixed while each class changes one part of the injected text. Switch classes on and off to build the injection.</p>
-      </div>
-      <div class="builder">
+      <figure class="card fig" id="fig-builder" aria-labelledby="builder-title">
+        <div class="fig-head">
+          <h3 id="builder-title">One request, six constructions</h3>
+          <p>The request stays fixed while each class changes one part of the injected text. Switch classes on and off to build the injection.</p>
+        </div>
         <div class="chips" id="builder-chips" role="group" aria-label="Classes in the injection"></div>
         <div class="mock">
           <div class="mock-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>Text the email assistant reads</div>
           <p class="mock-text" id="builder-text" aria-live="polite"></p>
         </div>
         <p class="builder-entries" id="builder-entries"></p>
-      </div>
-      <figcaption>From Table XXIII. The plain request, the six single-class rows and the all-six row are the paper's; other combinations keep the all-six row's order.</figcaption>
-    </figure>
+        <figcaption>From Table XXIII. The plain request, the six single-class rows and the all-six row are the paper's; other combinations keep the all-six row's order.</figcaption>
+      </figure>
 
-    <figure class="fig" id="fig-coverage" aria-labelledby="coverage-title">
-      <div class="fig-head">
-        <h3 id="coverage-title">Which classes each benchmark exercises</h3>
-        <p>Share of each source's labeled templates that carry a class. Agent benchmarks exercise two to four classes, while adaptive attackers in LLMail-Inject lean on F2, F3 and F4.</p>
-      </div>
-      <div class="table-scroll" tabindex="0" role="region" aria-label="Benchmark by class table, scrolls sideways">
-        <table class="heat" id="heat"></table>
-      </div>
-      <div class="scale" aria-hidden="true"><span>0%</span><span class="ramp"></span><span>100%</span><span class="zero-key"><i></i> none</span></div>
-      <figcaption id="coverage-caption">From Table VI.</figcaption>
-    </figure>
+      <figure class="card fig" id="fig-coverage" aria-labelledby="coverage-title">
+        <div class="fig-head">
+          <h3 id="coverage-title">Which classes each benchmark exercises</h3>
+          <p>Share of each source's labeled templates that carry a class. Agent benchmarks exercise two to four classes, while adaptive attackers in LLMail-Inject lean on F2, F3 and F4.</p>
+        </div>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Benchmark by class table, scrolls sideways">
+          <table class="heat" id="heat"></table>
+        </div>
+        <div class="scale" aria-hidden="true"><span>0%</span><span class="ramp"></span><span>100%</span><span class="zero-key"><i></i>none</span></div>
+        <figcaption id="coverage-caption">From Table VI.</figcaption>
+      </figure>
 
-    <figure class="fig fig-image" id="fig-map" aria-labelledby="map-title">
-      <div class="fig-head">
-        <h3 id="map-title">Templates cluster by construction</h3>
-        <p>A construction-steered encoder groups the 4,663 curated templates by how they are built, not by what they ask for.</p>
-      </div>
-      <div class="img-card">
-        <img src="images/fig1-cluster-map.png" width="1153" height="1063" loading="lazy" decoding="async"
-             alt="Two-dimensional map of 4,663 attack templates in ten clusters, each labeled by its dominant techniques and main sources: cluster 0 (F1.T1, F1.T2, F1.T4; ASB), 6 (F1.T1, F1.T4, F2.T4; ASB), 5 (F1.T1; InjecAgent), 4 (F1.T1, F1.T2, F1.T4, F4.T1; BrowseSafe), 8 (F1.T2, F1.T4, F4.T4, F5.T3; BrowseSafe, PIArena), 7 (F1.T6, F4.T1, F6.T3; PIArena), 1 (mixed; PIArena, CyberSecEval), 9 (F1.T3, F4.T1; PIArena, AgentDojo), 3 (F1.T1, F1.T4; ASB) and 2 (F1.T1, F1.T4; TaskTracker, SEP). Color shows the class besides F1 that most members carry: F1 only, F1 + F4, F1 + F2, F1 + F5, or mixed.">
-      </div>
-      <figcaption>Figure 1 of the paper. Each point is a template, embedded with the steered <code>F2LLM</code> encoder, projected to two dimensions (PCA, then UMAP), and clustered by <i>k</i>-means without labels (Appendix C). Bold labels name each cluster's dominant techniques, and small labels give its number (Table VIII) and main sources. Nearly all templates use instruction manipulation (F1), so color shows the other class that most of a cluster carries.</figcaption>
-    </figure>
+      <figure class="card fig" id="fig-map" aria-labelledby="map-title">
+        <div class="fig-head">
+          <h3 id="map-title">Templates cluster by construction</h3>
+          <p>A construction-steered encoder groups the 4,663 curated templates by how they are built, not by what they ask for.</p>
+        </div>
+        <div class="map-grid">
+          <div class="img-card">
+            <img src="images/fig1-cluster-map.png" width="1153" height="1063" loading="lazy" decoding="async"
+                 alt="Two-dimensional map of 4,663 attack templates in ten clusters, each labeled by its dominant techniques and main sources: cluster 0 (F1.T1, F1.T2, F1.T4; ASB), 6 (F1.T1, F1.T4, F2.T4; ASB), 5 (F1.T1; InjecAgent), 4 (F1.T1, F1.T2, F1.T4, F4.T1; BrowseSafe), 8 (F1.T2, F1.T4, F4.T4, F5.T3; BrowseSafe, PIArena), 7 (F1.T6, F4.T1, F6.T3; PIArena), 1 (mixed; PIArena, CyberSecEval), 9 (F1.T3, F4.T1; PIArena, AgentDojo), 3 (F1.T1, F1.T4; ASB) and 2 (F1.T1, F1.T4; TaskTracker, SEP). Color shows the class besides F1 that most members carry: F1 only, F1 + F4, F1 + F2, F1 + F5, or mixed.">
+          </div>
+          <div class="map-caption">
+            <p class="eyebrow">Figure 1 of the paper</p>
+            <p>Each point is a template, embedded with the steered <code>F2LLM</code> encoder, projected to two dimensions (PCA, then UMAP), and clustered by <i>k</i>-means without labels (Appendix C).</p>
+            <p>Bold labels name each cluster's dominant techniques, and small labels give its number (Table VIII) and main sources.</p>
+            <p>Nearly all templates use instruction manipulation (F1), so color shows the other class that most of a cluster carries.</p>
+          </div>
+        </div>
+      </figure>
+    </div>
   </section>
 
-  <section class="wrap cite" id="cite" aria-labelledby="cite-title">
-    <h2 id="cite-title">Cite</h2>
-    <div class="bibtex">
-      <pre><code id="bibtex">@misc{damianakis2026piatlas,
+  <section class="cite" id="cite" aria-labelledby="cite-title">
+    <div class="page narrow">
+      <header class="section-head">
+        <h2 id="cite-title">Cite</h2>
+      </header>
+      <div class="bibtex">
+        <pre><code id="bibtex">@misc{damianakis2026piatlas,
   title  = {{SoK}: {PIAtlas}: Decomposing the Unbounded Prompt Injection Attack Space},
   author = {Damianakis, Stavros and Psounis, Konstantinos},
   year   = {2026},
   note   = {Under review}
 }</code></pre>
-      <button type="button" class="btn btn-small" id="copy-bib" aria-describedby="copy-status">
-        <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="5" y="5" width="8.5" height="8.5" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 3.2V3a1.5 1.5 0 0 0-1.5-1.5H3A1.5 1.5 0 0 0 1.5 3v6A1.5 1.5 0 0 0 3 10.5h.2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-        <span>Copy</span>
-      </button>
-      <span id="copy-status" class="sr-only" aria-live="polite"></span>
+        <button type="button" class="btn btn-small" id="copy-bib" aria-describedby="copy-status">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="5" y="5" width="8.5" height="8.5" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 3.2V3a1.5 1.5 0 0 0-1.5-1.5H3A1.5 1.5 0 0 0 1.5 3v6A1.5 1.5 0 0 0 3 10.5h.2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+          <span>Copy</span>
+        </button>
+        <span id="copy-status" class="sr-only" aria-live="polite"></span>
+      </div>
     </div>
   </section>
 </main>
 
 <footer class="footer">
-  <div class="wrap">
-    <p>PIAtlas project page. Definitions, worked examples, tables and the figure come from the paper. Entries marked <em>Illustration</em> are renderings added for this page and are not from the paper.</p>
+  <div class="page">
+    <p>PIAtlas · Stavros Damianakis and Konstantinos Psounis, University of Southern California</p>
+    <p>Definitions, examples, tables and the figure are from the paper; items marked <em>Illustration</em> were added for this page.</p>
   </div>
 </footer>
 
 <aside id="detail" class="detail" aria-labelledby="d-title" hidden>
   <div class="detail-head">
     <nav class="crumbs" id="d-crumbs" aria-label="Position in the taxonomy"></nav>
-    <button type="button" class="icon-btn" id="d-close" aria-label="Close details">
-      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-    </button>
+    <div class="detail-actions">
+      <button type="button" class="icon-btn" id="d-copy" aria-label="Copy link to this entry" title="Copy link to this entry">
+        <svg class="i-link" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a3 3 0 0 0 4.2 0l2.3-2.3a3 3 0 0 0-4.2-4.2l-.8.8M9.4 6.6a3 3 0 0 0-4.2 0L2.9 8.9a3 3 0 0 0 4.2 4.2l.8-.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg class="i-check" viewBox="0 0 16 16" aria-hidden="true"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="icon-btn" id="d-close" aria-label="Close details" title="Close (Esc)">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      </button>
+    </div>
   </div>
   <div class="detail-body" id="d-body"></div>
 </aside>
 
 <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
 
-<script src="taxonomy.js"></script>
-<script src="app.js"></script>
+<script src="taxonomy.js?v=3"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>

@@ -17,7 +17,6 @@
   const LINK_RE = new RegExp('\\[\\[(' + CODE + ')\\]\\]|(^|[^\\w.\\-/#&])(' + CODE + ')(?!\\w)', 'g');
   const LEVEL = { class: 'Class', technique: 'Technique', 'sub-technique': 'Sub-technique' };
   const CHEVRON = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M3.3 1.8 6.6 5 3.3 8.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  const LINK_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a3 3 0 0 0 4.2 0l2.3-2.3a3 3 0 0 0-4.2-4.2l-.8.8M9.4 6.6a3 3 0 0 0-4.2 0L2.9 8.9a3 3 0 0 0 4.2 4.2l.8-.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
 
   // ---------------------------------------------------------------- index
   const byId = new Map();
@@ -186,12 +185,14 @@
     if (!terms.length) { clearHighlight(); status.textContent = ''; return; }
     const hits = new Set();
     const classHits = new Set();
+    nameHits.clear();
     byId.forEach((e, id) => {
       if (e.level === 'class') {
         const h = plain(e.id + ' ' + e.name);
         if (terms.every(t => t.test(h))) classHits.add(id);
       } else if (terms.every(t => t.test(haystack.get(id)))) {
         hits.add(id);
+        if (terms.every(t => t.test(plain(id + ' ' + e.name)))) nameHits.add(id);
       }
     });
     highlight(hits, classHits);
@@ -201,13 +202,18 @@
       : `No technique or sub-technique matches “${q}”.`;
   }
 
+  // Enter opens the first entry whose name matches, else the first match in matrix order
+  const nameHits = new Set();
   function firstHit() {
+    let first = null;
     for (const [id, e] of byId) {
       if (e.level === 'class') continue;
       const el = cellFor(id);
-      if (el && (el.classList.contains('hit') || el.closest('.tech-cell.hit'))) return id;
+      if (!el || !(el.classList.contains('hit') || el.closest('.tech-cell.hit'))) continue;
+      if (nameHits.has(id)) return id;
+      if (!first) first = id;
     }
-    return null;
+    return first;
   }
 
   // ---------------------------------------------------------------- incidents
@@ -288,7 +294,7 @@
     return `<section class="d-sec"><h3>Worked example</h3>
       <blockquote class="example">${rich(displayExample(e.example), { bare: false })}</blockquote>
       ${ILLUS[e.id] ? illusHTML(ILLUS[e.id]) : ''}
-      <p class="src">Appendix G. All worked examples share one benign stand-in, an email assistant steered to email the meeting notes to <code>mallory@example.com</code>.</p>
+      <p class="src">From Appendix G</p>
     </section>`;
   }
 
@@ -313,12 +319,12 @@
     if (!items.length) return '';
     return `<section class="d-sec"><h3>Seen in disclosed incidents <span class="count">${items.length}</span></h3>
       <ul class="list">${items.map(([inc, via]) => incidentItem(inc, via)).join('')}</ul>
-      <p class="src">Table XXI (Appendix E). PIAtlas classifies the attack text; how it was delivered or hidden stays outside the taxonomy.</p></section>`;
+      <p class="src">From Table XXI. Delivery is outside the taxonomy.</p></section>`;
   }
 
   const rulesHTML = rules => `<details class="d-sec"><summary>Boundary rules <span class="count">${rules.length}</span></summary>
     <ul class="rules">${rules.map(r => `<li>${rich(r)}</li>`).join('')}</ul>
-    <p class="src">Section IV-C and Appendix G: which entry applies when two seem to fit.</p></details>`;
+    <p class="src">Which entry applies when two seem to fit. From Section IV-C and Appendix G.</p></details>`;
 
   function corpusItem(x) {
     const text = x.described
@@ -339,24 +345,24 @@
         <div><dt>Acts on</dt><dd>${esc(c.actsOn)}</dd></div>
         <div><dt>Why it works</dt><dd>${esc(c.channel)}</dd></div>
         <div><dt>What counters it</dt><dd>${esc(c.lever)}</dd></div>
-      </dl><p class="src">Table IV</p>
-      <section class="d-sec"><h3>Signature test</h3><p>${rich(c.signature)}</p><p class="src">Section IV-C</p></section>
+      </dl><p class="src">From Table IV</p>
+      <section class="d-sec"><h3>Signature test</h3><p>${rich(c.signature)}</p><p class="src">From Section IV-C</p></section>
       <section class="d-sec"><h3>Worked example</h3>
         <blockquote class="example">${segHTML(c.oneRequest.segments)}</blockquote>
-        <p class="src">Table XXIII: the plain request with only this class's part changed, which is ${chip(c.oneRequest.entry)}.</p></section>
+        <p class="src">The plain request with only this class's part changed, ${chip(c.oneRequest.entry)}. From Table XXIII.</p></section>
       ${corpus.length ? `<section class="d-sec"><h3>Real templates <span class="count">${corpus.length}</span></h3>
         <ul class="corpus">${corpus.map(corpusItem).join('')}</ul>
-        <p class="src">Table V. PICorpus templates; highlighted words carry the construction and <span class="payload">&lt;payload&gt;</span> stands for the payload.</p></section>` : ''}
+        <p class="src">Highlighted words carry the construction. From Table V.</p></section>` : ''}
       <section class="d-sec"><h3>Share of labeled records</h3>
         <div class="shares">${share('Curated benchmarks, 4,663 templates', c.shares.curated)}${share('Adaptive attackers, LLMail-Inject sample of 4,000', c.shares.adaptive)}</div>
-        <p class="src">Table XVI, production labels.</p></section>
+        <p class="src">From Table XVI (production labels)</p></section>
       <section class="d-sec"><h3>Techniques <span class="count">${c.children.length}</span></h3>
         <p class="src">Techniques divide by ${esc(c.dividesBy)}. The list is ${esc(c.bounded)}.</p>
         <ul class="list">${c.children.map(t => `<li><div class="li-head"><span class="li-code">${t.id}</span><a href="#${t.id}">${esc(t.name)}</a>${wildMark(t)}</div><p class="li-def">Changes ${esc(t.changes)}</p></li>`).join('')}</ul></section>
       ${incs.length ? `<section class="d-sec"><h3>Disclosed incidents using ${c.id} <span class="count">${incs.length}</span></h3>
         <ul class="list">${incs.map(inc => `<li><div class="li-head"><b>${esc(inc.name)}</b><span class="li-meta">${esc(inc.system)} · ${esc(inc.date)}${inc.classes.includes(c.id) ? '' : ' · in a documented variant'}</span></div>
           <p class="li-def">${inc.codes.filter(k => classOf(k) === c.id).map(k => chip(k)).join(' ')}</p></li>`).join('')}</ul>
-        <p class="src">Table XXI (Appendix E)</p></section>` : ''}`;
+        <p class="src">From Table XXI</p></section>` : ''}`;
   }
 
   function techBody(t) {
@@ -384,11 +390,9 @@
 
   function detailHTML(e) {
     const cid = classOf(e.id);
-    const cls = byId.get(cid);
     const body = e.level === 'class' ? classBody(e) : e.level === 'technique' ? techBody(e) : subBody(e);
     return `<div data-c="${cid}">
-      <div class="d-kicker"><span class="badge">${cid}</span><span>${LEVEL[e.level]}</span>${e.level === 'class' ? '' : ` <span aria-hidden="true">·</span> <a href="#${cid}">${esc(cls.name)}</a>`}</div>
-      <div class="d-code"><code>${e.id}</code><button type="button" class="link-btn" data-copy-link="${e.id}">${LINK_ICON}<span>Copy link</span></button></div>
+      <div class="d-kicker"><span class="badge">${cid}</span><span>${LEVEL[e.level]}</span>${e.level === 'class' ? '' : `<code>${e.id}</code>`}</div>
       <h2 id="d-title" tabindex="-1">${esc(e.name)}</h2>
       <p class="d-desc">${rich(e.description)}</p>
       ${body}
@@ -561,7 +565,7 @@
   function renderHeat() {
     const ids = TAXONOMY.map(c => c.id);
     const head = `<thead><tr><th scope="col">Source</th><th scope="col" class="num">Templates</th>${TAXONOMY.map(c =>
-      `<th scope="col" class="cls" data-c="${c.id}"><span class="badge">${c.id}</span><span class="part">${esc(c.short)}</span></th>`).join('')}<th scope="col">Cov.</th></tr></thead>`;
+      `<th scope="col" class="cls" data-c="${c.id}"><span class="badge">${c.id}</span><span class="part">${esc(c.short)}</span></th>`).join('')}<th scope="col" class="cov">Cov.</th></tr></thead>`;
     let body = '<tbody>';
     let prev = null;
     BENCHMARKS.rows.forEach((r, ri) => {
@@ -733,11 +737,18 @@
   incidentSel.addEventListener('change', onIncident);
 
   $('#d-close').addEventListener('click', () => closeDetail());
-  dBody.addEventListener('click', async ev => {
-    const b = ev.target.closest('[data-copy-link]');
-    if (!b) return;
-    const ok = await copyText(location.href.split('#')[0] + '#' + b.dataset.copyLink);
-    flash(b, ok ? 'Copied' : 'Copy failed');
+  const copyBtn = $('#d-copy');
+  copyBtn.addEventListener('click', async () => {
+    if (!currentId) return;
+    const ok = await copyText(location.href.split('#')[0] + '#' + currentId);
+    copyBtn.classList.toggle('copied', ok);
+    copyBtn.setAttribute('aria-label', ok ? 'Link copied' : 'Copy failed');
+    copyBtn.title = ok ? 'Link copied' : 'Copy failed';
+    setTimeout(() => {
+      copyBtn.classList.remove('copied');
+      copyBtn.setAttribute('aria-label', 'Copy link to this entry');
+      copyBtn.title = 'Copy link to this entry';
+    }, 1600);
   });
   document.addEventListener('keydown', ev => {
     const typing = ev.target.closest && ev.target.closest('input, textarea, select');

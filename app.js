@@ -549,7 +549,7 @@
 
   function rampColor(v) {
     // light: near-zero recedes to the light end; dark: near-zero recedes toward the dark surface
-    const steps = darkQuery.matches ? RAMP.slice(3).reverse() : RAMP;
+    const steps = document.documentElement.getAttribute('data-theme') === 'dark' ? RAMP.slice(3).reverse() : RAMP;
     const t = Math.min(1, Math.max(0, v / 100)) * (steps.length - 1);
     const i = Math.min(Math.floor(t), steps.length - 2);
     const f = t - i;
@@ -616,7 +616,32 @@
     table.addEventListener('pointermove', ev => { if (!tip.hidden) place(ev); });
     table.addEventListener('pointerout', ev => { if (!ev.relatedTarget || !ev.relatedTarget.closest || !ev.relatedTarget.closest('td.v')) tip.hidden = true; });
     window.addEventListener('scroll', () => { tip.hidden = true; }, { passive: true });
-    darkQuery.addEventListener('change', renderHeat);
+  }
+
+  // ---------------------------------------------------------------- day / night
+  function initTheme() {
+    const root = document.documentElement;
+    const buttons = $$('.theme-switch [data-theme-set]');
+    const meta = $('meta[name="theme-color"]');
+    const saved = () => {
+      try { return localStorage.getItem('piatlas-theme'); } catch (err) { return null; }
+    };
+    const apply = (theme, save) => {
+      root.setAttribute('data-theme', theme);
+      buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === theme)));
+      if (meta) meta.setAttribute('content', theme === 'dark' ? '#080D15' : '#1C2840');
+      if (save) {
+        try { localStorage.setItem('piatlas-theme', theme); } catch (err) { /* storage blocked: still switch */ }
+      }
+      renderHeat();
+    };
+    buttons.forEach(b => b.addEventListener('click', () => apply(b.dataset.themeSet, true)));
+    // until the visitor picks a mode, follow the system setting
+    darkQuery.addEventListener('change', ev => {
+      const s = saved();
+      if (s !== 'light' && s !== 'dark') apply(ev.matches ? 'dark' : 'light', false);
+    });
+    apply(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light', false);
   }
 
   // ---------------------------------------------------------------- top navigation state
@@ -740,6 +765,7 @@
 
   initBuilder();
   initHeat();
+  initTheme();
   initNav();
   updateScrollHints();
   onHash();

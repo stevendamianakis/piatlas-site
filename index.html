@@ -6,6 +6,18 @@
 <title>PIAtlas · A construction taxonomy of prompt injection</title>
 <meta name="description" content="PIAtlas organizes prompt-injection attacks by how the injected instruction is constructed: 6 classes, 34 techniques and 131 sub-techniques, each with a worked example.">
 <meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#1C2840">
+<script>
+  /* Day or night: apply the visitor's saved choice, else the system setting, before the first paint. */
+  (function () {
+    var theme = null;
+    try { theme = localStorage.getItem('piatlas-theme'); } catch (err) { /* storage blocked */ }
+    if (theme !== 'light' && theme !== 'dark') {
+      theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='1' y='3' width='6.5' height='8' rx='1.6' fill='%234588D8'/%3E%3Crect x='8.75' y='3' width='6.5' height='8' rx='1.6' fill='%23349A82'/%3E%3Crect x='16.5' y='3' width='6.5' height='8' rx='1.6' fill='%239B6FC2'/%3E%3Crect x='1' y='13' width='6.5' height='8' rx='1.6' fill='%23D9773F'/%3E%3Crect x='8.75' y='13' width='6.5' height='8' rx='1.6' fill='%23C49A3C'/%3E%3Crect x='16.5' y='13' width='6.5' height='8' rx='1.6' fill='%23D05A6F'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,12 +40,24 @@
       </svg>
       <span>PIAtlas</span>
     </a>
-    <nav class="topnav" aria-label="Sections">
-      <a href="#overview" data-nav="overview">Overview</a>
-      <a href="#matrix" data-nav="matrix">Matrix</a>
-      <a href="#figures" data-nav="figures">Figures</a>
-      <a href="#cite" data-nav="cite">Cite</a>
-    </nav>
+    <div class="top-right">
+      <nav class="topnav" aria-label="Sections">
+        <a href="#overview" data-nav="overview">Overview</a>
+        <a href="#matrix" data-nav="matrix">Matrix</a>
+        <a href="#figures" data-nav="figures">Figures</a>
+        <a href="#cite" data-nav="cite">Cite</a>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" data-theme-set="light" aria-pressed="false" title="Day mode">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.2v1.6M8 13.2v1.6M1.2 8h1.6M13.2 8h1.6M3.2 3.2l1.1 1.1M11.7 11.7l1.1 1.1M3.2 12.8l1.1-1.1M11.7 4.3l1.1-1.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span>Day</span>
+        </button>
+        <button type="button" data-theme-set="dark" aria-pressed="false" title="Night mode">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.6 10.2A6 6 0 0 1 5.8 2.4a6 6 0 1 0 7.8 7.8Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <span>Night</span>
+        </button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -44,7 +68,7 @@
         <p class="kicker">Systematization of Knowledge · Prompt injection</p>
         <h1 id="paper-title">SoK: PIAtlas: Decomposing the Unbounded Prompt Injection Attack Space</h1>
         <p class="authors">
-          <a href="mailto:sdamiana@usc.edu">Stavros Damianakis</a><span class="sep" aria-hidden="true">·</span><a href="mailto:kpsounis@usc.edu">Konstantinos Psounis</a>
+          <a href="mailto:sdamiana@usc.edu">Stavros Damianakis</a> <span class="sep" aria-hidden="true">·</span> <a href="mailto:kpsounis@usc.edu">Konstantinos Psounis</a>
         </p>
         <p class="affil">University of Southern California</p>
         <p class="emails">sdamiana@usc.edu, kpsounis@usc.edu</p>

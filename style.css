@@ -38,36 +38,36 @@
   --shadow-lg: -18px 0 44px rgb(16 24 40 / 18%);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --bg: #0C1119;
-    --surface: #151C27;
-    --surface-2: #19212E;
-    --surface-3: #232D3C;
-    --ink: #E8EDF4;
-    --ink-2: #B9C2CF;
-    --ink-3: #8E99AB;
-    --line: #2D3849;
-    --line-2: #232C3A;
-    --nav: #080D15;
-    --nav-2: #1A2740;
-    --nav-ink: #EEF2F8;
-    --nav-ink-2: #98A4B9;
-    --accent: #80B4F7;
-    --accent-ink: #0C1119;
-    --focus: #80B4F7;
-    --wild: #FF6F78;
-    --hl-alpha: 24%;
-    --bar: #2B3647;
-    --bar-ink: #A9B4C5;
-    --bar-open: #5C79AB;
+/* Night mode. index.html sets data-theme on <html> before the first paint, from the visitor's
+ * saved choice or, failing that, the system setting; the Day/Night switch changes it. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0C1119;
+  --surface: #151C27;
+  --surface-2: #19212E;
+  --surface-3: #232D3C;
+  --ink: #E8EDF4;
+  --ink-2: #B9C2CF;
+  --ink-3: #8E99AB;
+  --line: #2D3849;
+  --line-2: #232C3A;
+  --nav: #080D15;
+  --nav-2: #1A2740;
+  --nav-ink: #EEF2F8;
+  --nav-ink-2: #98A4B9;
+  --accent: #80B4F7;
+  --accent-ink: #0C1119;
+  --focus: #80B4F7;
+  --wild: #FF6F78;
+  --hl-alpha: 24%;
+  --bar: #2B3647;
+  --bar-ink: #A9B4C5;
+  --bar-open: #5C79AB;
 
-    --f1: #4588D8; --f2: #349A82; --f3: #9B6FC2; --f4: #BD4D02; --f5: #B48F3C; --f6: #D05A6F;
-    --f1-on: #0E1420; --f2-on: #0E1420; --f3-on: #0E1420; --f4-on: #FFFFFF; --f5-on: #0E1420; --f6-on: #0E1420;
-    --shadow: 0 1px 2px rgb(0 0 0 / 30%);
-    --shadow-lg: -18px 0 44px rgb(0 0 0 / 50%);
-  }
+  --f1: #4588D8; --f2: #349A82; --f3: #9B6FC2; --f4: #BD4D02; --f5: #B48F3C; --f6: #D05A6F;
+  --f1-on: #0E1420; --f2-on: #0E1420; --f3-on: #0E1420; --f4-on: #FFFFFF; --f5-on: #0E1420; --f6-on: #0E1420;
+  --shadow: 0 1px 2px rgb(0 0 0 / 30%);
+  --shadow-lg: -18px 0 44px rgb(0 0 0 / 50%);
 }
 
 [data-c="F1"] { --c: var(--f1); --c-on: var(--f1-on); }
@@ -137,6 +137,18 @@ section[id], [id="matrix"] { scroll-margin-top: 12px; }
 }
 .topnav a:hover { color: var(--nav-ink); background: rgb(255 255 255 / 5%); }
 .topnav a[aria-current="true"] { color: var(--nav-ink); background: var(--nav-2); border-bottom-color: #7FB3F6; }
+.top-right { display: flex; align-items: center; gap: 14px; height: 100%; }
+.theme-switch {
+  display: inline-flex; padding: 2px; border-radius: 999px;
+  background: rgb(255 255 255 / 7%); border: 1px solid rgb(255 255 255 / 14%);
+}
+.theme-switch button {
+  position: relative; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border: 0;
+  border-radius: 999px; background: transparent; color: var(--nav-ink-2); font-size: 12.5px; font-weight: 600;
+}
+.theme-switch button:hover { color: var(--nav-ink); }
+.theme-switch button[aria-pressed="true"] { background: rgb(255 255 255 / 16%); color: var(--nav-ink); }
+.theme-switch svg { width: 14px; height: 14px; }
 
 /* ---------- hero ---------- */
 .hero { background: var(--surface); border-bottom: 1px solid var(--line-2); }
@@ -152,7 +164,7 @@ section[id], [id="matrix"] { scroll-margin-top: 12px; }
 .authors { margin-top: 14px; font-size: 17px; font-weight: 600; }
 .authors a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); white-space: nowrap; }
 .authors a:hover { border-bottom-color: var(--ink); }
-.authors .sep { margin: 0 8px; color: var(--ink-3); }
+.authors .sep { margin: 0 4px; color: var(--ink-3); }
 .affil { margin-top: 4px; font-size: 14.5px; color: var(--ink-2); }
 .emails { margin-top: 2px; font-family: var(--mono); font-size: 12.5px; color: var(--ink-3); }
 .buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
@@ -166,6 +178,8 @@ section[id], [id="matrix"] { scroll-margin-top: 12px; }
 .btn:hover { border-color: var(--ink-3); }
 .btn-primary { background: var(--nav); border-color: var(--nav); color: var(--nav-ink); }
 .btn-primary:hover { background: var(--nav-2); border-color: var(--nav-2); }
+:root[data-theme="dark"] .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+:root[data-theme="dark"] .btn-primary:hover { background: #A3C8F9; border-color: #A3C8F9; }
 .btn-small { height: 32px; padding: 0 12px; font-size: 13px; }
 
 .stats {
@@ -529,9 +543,7 @@ details.d-sec[open] > summary::before { transform: rotate(45deg); }
 .scale .ramp { width: 160px; height: 10px; border-radius: 3px; background: linear-gradient(90deg, #CDE2FB, #86B6EF, #3987E5, #1C5CAB, #0D366B); }
 .zero-key { display: inline-flex; align-items: center; gap: 6px; margin-left: 12px; }
 .zero-key i { width: 14px; height: 10px; border-radius: 2px; background: var(--surface-2); border: 1px solid var(--line); }
-@media (prefers-color-scheme: dark) {
-  .scale .ramp { background: linear-gradient(90deg, #0D366B, #1C5CAB, #3987E5, #6DA7EC, #86B6EF); }
-}
+:root[data-theme="dark"] .scale .ramp { background: linear-gradient(90deg, #0D366B, #1C5CAB, #3987E5, #6DA7EC, #86B6EF); }
 
 .fig-image .img-card {
   margin-top: 16px; max-width: 620px; background: #FFFFFF; border-radius: 10px; padding: 8px;
@@ -571,6 +583,9 @@ details.d-sec[open] > summary::before { transform: rotate(45deg); }
   .topbar-inner { padding: 0 12px 0 16px; height: 52px; }
   .topnav a { padding: 0 9px; font-size: 13px; }
   .topnav a[data-nav="overview"] { display: none; }
+  .top-right { gap: 6px; }
+  .theme-switch button { padding: 0 8px; }
+  .theme-switch button span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .brand { font-size: 18px; }
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stats dd { font-size: 19px; }
@@ -588,6 +603,9 @@ details.d-sec[open] > summary::before { transform: rotate(45deg); }
   .detail-body { padding: 16px 16px 40px; }
   .case { grid-template-columns: minmax(0, 1fr); }
   .case .case-close { grid-column: 1; grid-row: auto; justify-self: start; }
+}
+@media (max-width: 400px) {
+  .topnav a[data-nav="cite"] { display: none; }
 }
 @media (max-width: 720px) {
   body.detail-open { overflow: hidden; }

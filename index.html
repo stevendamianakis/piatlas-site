@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 <a class="skip" href="#matrix">Skip to the matrix</a>
@@ -45,6 +45,7 @@
         <a href="#overview" data-nav="overview">Overview</a>
         <a href="#matrix" data-nav="matrix">Matrix</a>
         <a href="#figures" data-nav="figures">Figures</a>
+        <a href="#download" data-nav="download">Download</a>
         <a href="#cite" data-nav="cite">Cite</a>
       </nav>
       <div class="theme-switch" role="group" aria-label="Color theme">
@@ -67,6 +68,10 @@
       <h1 id="paper-title">SoK: PIAtlas: Decomposing the Unbounded Prompt Injection Attack Space</h1>
       <div class="buttons">
         <a class="btn btn-primary" href="#matrix">Explore the matrix</a>
+        <a class="btn" href="#download">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8.2M4.6 7 8 10.4 11.4 7M2.5 11.2v1.3A1.5 1.5 0 0 0 4 14h8a1.5 1.5 0 0 0 1.5-1.5v-1.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download
+        </a>
         <a class="btn" href="#cite">
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2.5h10M3 6h10M3 9.5h6M3 13h8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
           BibTeX
@@ -113,7 +118,21 @@
         </div>
         <label class="sr-only" for="incident">Highlight a disclosed incident</label>
         <select id="incident"><option value="">Highlight an incident…</option></select>
-        <label class="check"><input type="checkbox" id="show-ids"> Show IDs</label>
+        <div class="tool-pair">
+          <label class="check"><input type="checkbox" id="show-ids"> Show IDs</label>
+          <details class="dl-menu" id="dl-menu">
+            <summary title="Download the taxonomy">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8.2M4.6 7 8 10.4 11.4 7M2.5 11.2v1.3A1.5 1.5 0 0 0 4 14h8a1.5 1.5 0 0 0 1.5-1.5v-1.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="lbl">Download</span>
+              <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </summary>
+            <div class="dl-pop" role="group" aria-label="Download the taxonomy">
+              <button type="button" data-export="csv"><span class="ftype">CSV</span><span class="dl-text"><b>Spreadsheet</b><small>One row per entry</small></span></button>
+              <button type="button" data-export="json"><span class="ftype">JSON</span><span class="dl-text"><b>Nested data</b><small>One tree, for code</small></span></button>
+              <button type="button" data-export="md"><span class="ftype">MD</span><span class="dl-text"><b>Readable outline</b><small>One heading per entry</small></span></button>
+            </div>
+          </details>
+        </div>
       </div>
       <p id="q-count" class="status" aria-live="polite"></p>
       <div id="case" class="case" hidden></div>
@@ -188,6 +207,36 @@
     </div>
   </section>
 
+  <section class="download" id="download" aria-labelledby="download-title">
+    <div class="page narrow">
+      <header class="section-head">
+        <h2 id="download-title">Download the taxonomy</h2>
+        <p>Every class, technique and sub-technique, with its definition, worked example, boundary rules and source in the paper.</p>
+      </header>
+      <div class="formats">
+        <button type="button" class="format" data-export="csv">
+          <span class="ftype">CSV</span>
+          <span class="format-title">Spreadsheet</span>
+          <span class="format-desc">One row per entry, with its class and technique, for spreadsheets and labeling tools.</span>
+          <span class="format-foot"><span class="get"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8.2M4.6 7 8 10.4 11.4 7M2.5 11.2v1.3A1.5 1.5 0 0 0 4 14h8a1.5 1.5 0 0 0 1.5-1.5v-1.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Download</span><span class="size" data-size="csv"></span></span>
+        </button>
+        <button type="button" class="format" data-export="json">
+          <span class="ftype">JSON</span>
+          <span class="format-title">Nested data</span>
+          <span class="format-desc">Classes, techniques and sub-techniques nested in one tree, for code.</span>
+          <span class="format-foot"><span class="get"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8.2M4.6 7 8 10.4 11.4 7M2.5 11.2v1.3A1.5 1.5 0 0 0 4 14h8a1.5 1.5 0 0 0 1.5-1.5v-1.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Download</span><span class="size" data-size="json"></span></span>
+        </button>
+        <button type="button" class="format" data-export="md">
+          <span class="ftype">MD</span>
+          <span class="format-title">Readable outline</span>
+          <span class="format-desc">One Markdown heading per entry, for documents, wikis and prompts.</span>
+          <span class="format-foot"><span class="get"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8.2M4.6 7 8 10.4 11.4 7M2.5 11.2v1.3A1.5 1.5 0 0 0 4 14h8a1.5 1.5 0 0 0 1.5-1.5v-1.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Download</span><span class="size" data-size="md"></span></span>
+        </button>
+      </div>
+      <p class="formats-note">The files hold the paper's text only; illustrations added for this page are left out.</p>
+    </div>
+  </section>
+
   <section class="cite" id="cite" aria-labelledby="cite-title">
     <div class="page narrow">
       <header class="section-head">
@@ -233,8 +282,9 @@
 </aside>
 
 <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+<p id="dl-status" class="sr-only" aria-live="polite"></p>
 
-<script src="taxonomy.js?v=4"></script>
-<script src="app.js?v=4"></script>
+<script src="taxonomy.js?v=5"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>

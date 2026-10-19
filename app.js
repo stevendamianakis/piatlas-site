@@ -527,6 +527,210 @@
     setTimeout(() => { label.textContent = old; }, 1600);
   }
 
+  // ---------------------------------------------------------------- downloads: the taxonomy as CSV, JSON or Markdown
+  // Built in the browser from TAXONOMY, so the files always match the matrix. They carry the paper's
+  // text only (no illustrations). Literal strings keep their `code` marks; [[F1.T2]] links become F1.T2.
+  const PAGE_URL = location.href.split(/[?#]/)[0];
+  const exportText = s => String(s == null ? '' : s).replace(/\[\[([^\]]+)\]\]/g, '$1');
+  const quoted = s => '“' + s + '”';
+
+  // one flat record per entry, in matrix order; class and technique fields stay empty where they do not apply
+  function exportRecords() {
+    const rows = [];
+    TAXONOMY.forEach(c => {
+      rows.push({
+        id: c.id, level: c.level, name: c.name, class: c, technique: null,
+        description: exportText(c.description),
+        example: quoted(exportText(c.oneRequest.segments.map(s => s.t).join(''))),
+        exampleEntry: exportText(c.oneRequest.entry),
+        partItChanges: c.part, actsOn: c.actsOn, whyItWorks: c.channel, whatCountersIt: c.lever,
+        signatureTest: exportText(c.signature), techniquesDivideBy: c.dividesBy, howTheListIsBounded: c.bounded,
+        boundaryRules: (c.boundary || []).map(exportText),
+        source: c.source + '; Table XXIII (example)'
+      });
+      c.children.forEach(t => {
+        rows.push({
+          id: t.id, level: t.level, name: t.name, class: c, technique: t,
+          description: exportText(t.description), example: exportText(displayExample(t.example)),
+          changes: t.changes, boundaryRules: (t.boundary || []).map(exportText), source: t.source
+        });
+        t.children.forEach(s => rows.push({
+          id: s.id, level: s.level, name: s.name, class: c, technique: t,
+          description: exportText(s.description), example: exportText(displayExample(s.example)),
+          boundaryRules: (s.boundary || []).map(exportText), source: s.source
+        }));
+      });
+    });
+    return rows;
+  }
+
+  const COUNTS = {
+    classes: TAXONOMY.length,
+    techniques: techniques.length,
+    subTechniques: techniques.reduce((n, t) => n + t.children.length, 0)
+  };
+  const CSV_COLUMNS = [
+    ['id', r => r.id], ['level', r => r.level], ['name', r => r.name],
+    ['class_id', r => r.class.id], ['class_name', r => r.class.name],
+    ['technique_id', r => r.technique ? r.technique.id : ''], ['technique_name', r => r.technique ? r.technique.name : ''],
+    ['description', r => r.description], ['example', r => r.example], ['changes', r => r.changes],
+    ['boundary_rules', r => r.boundaryRules.join(' ')],
+    ['part_it_changes', r => r.partItChanges], ['acts_on', r => r.actsOn], ['why_it_works', r => r.whyItWorks],
+    ['what_counters_it', r => r.whatCountersIt], ['signature_test', r => r.signatureTest],
+    ['techniques_divide_by', r => r.techniquesDivideBy], ['how_the_list_is_bounded', r => r.howTheListIsBounded],
+    ['source', r => r.source], ['url', r => PAGE_URL + '#' + r.id]
+  ];
+
+  // RFC 4180: CRLF rows, quotes doubled, fields quoted when needed; the byte-order mark tells Excel it is UTF-8
+  function toCSV(rows) {
+    const cell = v => {
+      const s = v == null ? '' : String(v);
+      return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    };
+    const lines = [CSV_COLUMNS.map(([k]) => k).join(',')]
+      .concat(rows.map(r => CSV_COLUMNS.map(([, get]) => cell(get(r))).join(',')));
+    return '\uFEFF' + lines.join('\r\n') + '\r\n';
+  }
+
+  function toJSON(rows) {
+    const link = id => PAGE_URL + '#' + id;
+    const rules = r => (r.boundaryRules.length ? { boundaryRules: r.boundaryRules } : {});
+    const sub = r => ({
+      id: r.id, level: r.level, name: r.name, description: r.description, example: r.example,
+      ...rules(r), source: r.source, url: link(r.id)
+    });
+    const tech = r => ({
+      id: r.id, level: r.level, name: r.name, description: r.description, changes: r.changes, example: r.example,
+      ...rules(r), source: r.source, url: link(r.id),
+      subTechniques: rows.filter(x => x.level === 'sub-technique' && x.technique.id === r.id).map(sub)
+    });
+    const cls = r => ({
+      id: r.id, level: r.level, name: r.name, description: r.description,
+      partItChanges: r.partItChanges, actsOn: r.actsOn, whyItWorks: r.whyItWorks, whatCountersIt: r.whatCountersIt,
+      signatureTest: r.signatureTest, techniquesDivideBy: r.techniquesDivideBy, howTheListIsBounded: r.howTheListIsBounded,
+      example: r.example, exampleEntry: r.exampleEntry, ...rules(r), source: r.source, url: link(r.id),
+      techniques: rows.filter(x => x.level === 'technique' && x.class.id === r.id).map(tech)
+    });
+    return JSON.stringify({
+      name: 'PIAtlas',
+      description: 'A construction taxonomy of prompt-injection attacks: classes, techniques and sub-techniques with definitions, worked examples, boundary rules and sources in the paper.',
+      paper: $('#paper-title').textContent.trim(),
+      citation: $('#bibtex').textContent,
+      url: PAGE_URL,
+      counts: COUNTS,
+      notes: [
+        'IDs are stable, and gaps in their numbering are deliberate.',
+        'Examples use one benign stand-in: an email assistant told to send notes to mallory@example.com.',
+        'Literal strings are marked as Markdown inline code (`...`).',
+        'Boundary rules say which entry applies when two seem to fit (Section IV-C and Appendix G).',
+        'Illustrations shown on the project page are not from the paper and are not included.'
+      ],
+      classes: rows.filter(r => r.level === 'class').map(cls)
+    }, null, 2) + '\n';
+  }
+
+  function toMarkdown(rows) {
+    // escape Markdown outside `code` spans
+    const md = s => String(s).split(/(`[^`]*`)/g).map(part =>
+      part[0] === '`' ? part : part.replace(/[\\*_[\]<>]/g, '\\$&')).join('');
+    const sameSource = level => {
+      const set = new Set(rows.filter(r => r.level === level).map(r => r.source));
+      return set.size === 1 ? Array.from(set)[0] : null;
+    };
+    const shared = { class: sameSource('class'), technique: sameSource('technique'), 'sub-technique': sameSource('sub-technique') };
+    const out = [];
+    const add = (...lines) => out.push(...lines);
+    const facts = list => list.filter(([, v]) => v).map(([k, v]) => `- **${k}:** ${md(v)}`);
+    const tail = r => {
+      if (r.boundaryRules.length) add('', '**Boundary rules**', '', ...r.boundaryRules.map(b => '- ' + md(b)));
+      if (!shared[r.level]) add('', `*Source: ${md(r.source)}*`);
+      add('');
+    };
+
+    add(`# PIAtlas taxonomy`, '',
+      `${COUNTS.classes} classes, ${COUNTS.techniques} techniques and ${COUNTS.subTechniques} sub-techniques from *${md($('#paper-title').textContent.trim())}*.`, '',
+      `- Project page: <${PAGE_URL}>. Every entry has its own link, such as <${PAGE_URL}#F1.T2>.`,
+      '- IDs are stable, and gaps in their numbering are deliberate.',
+      '- Examples use one benign stand-in: an email assistant told to send notes to `mallory@example.com`.',
+      '- Boundary rules say which entry applies when two seem to fit (Section IV-C and Appendix G).');
+    const srcLines = [['Classes', shared.class], ['Techniques', shared.technique], ['Sub-techniques', shared['sub-technique']]]
+      .filter(([, v]) => v).map(([k, v]) => `- Sources for ${k.toLowerCase()}: ${md(v)}.`);
+    add(...srcLines, '', '## Classes', '', '| ID | Class | Part it changes | Techniques |', '| --- | --- | --- | ---: |');
+    const cellMd = s => md(s).replace(/\|/g, '\\|');
+    TAXONOMY.forEach(c => add(`| ${c.id} | ${cellMd(c.name)} | ${cellMd(c.part)} | ${c.children.length} |`));
+    add('');
+
+    rows.forEach(r => {
+      if (r.level === 'class') {
+        add(`## ${r.id} ${r.name}`, '', md(r.description), '', ...facts([
+          ['Part it changes', r.partItChanges], ['Acts on', r.actsOn], ['Why it works', r.whyItWorks],
+          ['What counters it', r.whatCountersIt], ['Signature test', r.signatureTest],
+          ['Techniques divide by', `${r.techniquesDivideBy}; the list is ${r.howTheListIsBounded}`],
+          ['Example', `${r.example} (${r.exampleEntry})`]
+        ]));
+      } else if (r.level === 'technique') {
+        add(`### ${r.id} ${r.name}`, '', md(r.description), '', ...facts([['What it changes', r.changes], ['Example', r.example]]));
+      } else {
+        add(`#### ${r.id} ${r.name}`, '', md(r.description), '', ...facts([['Example', r.example]]));
+      }
+      tail(r);
+    });
+    return out.join('\n').replace(/\n{3,}/g, '\n\n').trimEnd() + '\n';
+  }
+
+  const EXPORTS = {
+    csv: { file: 'piatlas-taxonomy.csv', type: 'text/csv;charset=utf-8', build: toCSV },
+    json: { file: 'piatlas-taxonomy.json', type: 'application/json;charset=utf-8', build: toJSON },
+    md: { file: 'piatlas-taxonomy.md', type: 'text/markdown;charset=utf-8', build: toMarkdown }
+  };
+  const exportFile = fmt => EXPORTS[fmt].build(exportRecords());
+  const kb = text => Math.max(1, Math.round(new Blob([text]).size / 1024)) + ' KB';
+
+  function downloadExport(fmt) {
+    const x = EXPORTS[fmt];
+    const text = exportFile(fmt);
+    const url = URL.createObjectURL(new Blob([text], { type: x.type }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = x.file;
+    a.hidden = true;
+    a.addEventListener('click', ev => ev.stopPropagation());   // keep this click away from the page's handlers
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+    $('#dl-status').textContent = `Downloading ${x.file}, ${kb(text)}.`;
+  }
+
+  function initDownloads() {
+    const menu = $('#dl-menu');
+    const summary = $('summary', menu);
+    // file sizes on the download cards
+    Object.keys(EXPORTS).forEach(fmt => {
+      const el = $(`[data-size="${fmt}"]`);
+      if (el) el.textContent = kb(exportFile(fmt));
+    });
+    document.addEventListener('click', ev => {
+      const b = ev.target.closest('[data-export]');
+      if (menu.open && (b || !menu.contains(ev.target))) {
+        menu.open = false;
+        if (b && menu.contains(b)) summary.focus();
+      }
+      if (b) downloadExport(b.dataset.export);
+    });
+    menu.addEventListener('keydown', ev => {
+      if (ev.key === 'Escape' && menu.open) {
+        ev.stopPropagation();
+        menu.open = false;
+        summary.focus();
+      }
+    });
+    // close when keyboard focus moves on to another control (a click elsewhere is handled above)
+    menu.addEventListener('focusout', ev => {
+      if (ev.relatedTarget && !menu.contains(ev.relatedTarget)) menu.open = false;
+    });
+  }
+
   // ---------------------------------------------------------------- figure: one request, six constructions
   function initBuilder() {
     const allSix = ONE_REQUEST.find(r => !r.cls && /all/.test(r.part)).segments.filter(s => s.c);
@@ -696,24 +900,34 @@
 
   // ---------------------------------------------------------------- top navigation state
   function initNav() {
-    if (!('IntersectionObserver' in window)) return;
-    // a section is current while it overlaps the top 40% of the viewport; the first such wins
+    // The current section is the last one whose top has passed 35% of the window height. At the
+    // bottom of the page, where the last sections cannot scroll that far, it is the section the
+    // visitor jumped to if that section is in view, else the last section.
     const links = $$('.topnav a');
-    const order = ['overview', 'matrix', 'figures', 'cite'];
-    const sections = $$('#overview, #matrix, #figures, #cite, [data-section]');
-    const visible = new Set();
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(en => {
-        if (en.isIntersecting) visible.add(en.target); else visible.delete(en.target);
-      });
-      const names = new Set(Array.from(visible).map(el => el.dataset.section || el.id));
-      const current = order.find(name => names.has(name));
+    const ids = links.map(a => a.dataset.nav);
+    const sections = ids.map(id => document.getElementById(id));
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const vh = window.innerHeight;
+      const atBottom = window.scrollY + vh >= document.documentElement.scrollHeight - 2;
+      const jumped = ids.indexOf(location.hash.slice(1));
+      let current = null;
+      if (atBottom) {
+        current = jumped >= 0 && sections[jumped].getBoundingClientRect().top < vh ? ids[jumped] : ids[ids.length - 1];
+      } else {
+        sections.forEach((el, i) => { if (el.getBoundingClientRect().top <= vh * 0.35) current = ids[i]; });
+      }
       links.forEach(a => {
         if (a.dataset.nav === current) a.setAttribute('aria-current', 'true');
         else a.removeAttribute('aria-current');
       });
-    }, { rootMargin: '0px 0px -60% 0px' });
-    sections.forEach(el => io.observe(el));
+    };
+    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    window.addEventListener('hashchange', queue);
+    update();
   }
 
   // ---------------------------------------------------------------- wiring
@@ -831,6 +1045,7 @@
   initHeat();
   initTheme();
   initNav();
+  initDownloads();
   updateScrollHints();
   onHash();
 })();

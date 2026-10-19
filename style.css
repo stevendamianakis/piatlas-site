@@ -211,7 +211,7 @@ section[id], [data-section] { scroll-margin-top: 16px; }
 .abstract { font-size: 15.5px; line-height: 1.75; color: var(--ink-2); }
 
 /* ---------- section heads ---------- */
-.matrix-section, .figures, .cite { padding-top: 72px; }
+.matrix-section, .figures, .download, .cite { padding-top: 72px; }
 .section-head { max-width: 760px; margin: 0 auto; text-align: center; }
 .section-head h2 { font-size: clamp(24px, 2.6vw, 30px); font-weight: 700; letter-spacing: -0.015em; }
 .section-head p { margin-top: 10px; font-size: 16px; color: var(--ink-2); text-wrap: balance; }
@@ -251,6 +251,43 @@ section[id], [data-section] { scroll-margin-top: 16px; }
   font-size: 13.5px; font-weight: 600; cursor: pointer; user-select: none;
 }
 .check input { width: 15px; height: 15px; margin: 0; accent-color: var(--accent); }
+
+/* Show IDs and Download wrap to a second line together, never one alone */
+.tool-pair { display: flex; gap: 10px; }
+
+/* download menu: a disclosure whose panel lists the three formats */
+.dl-menu { position: relative; }
+.dl-menu > summary {
+  display: inline-flex; align-items: center; gap: 7px; height: var(--control); padding: 0 12px 0 13px;
+  border: 1px solid var(--line); border-radius: var(--r); background: var(--surface);
+  font-size: 13.5px; font-weight: 600; list-style: none; cursor: pointer; user-select: none;
+}
+.dl-menu > summary::-webkit-details-marker { display: none; }
+.dl-menu > summary:hover, .dl-menu[open] > summary { border-color: var(--ink-3); }
+.dl-menu > summary svg { width: 15px; height: 15px; color: var(--ink-2); }
+.dl-menu > summary .chev { width: 12px; height: 12px; color: var(--ink-3); transition: transform .15s; }
+.dl-menu[open] > summary .chev { transform: rotate(180deg); }
+.dl-pop {
+  position: absolute; top: calc(100% + 6px); right: 0; z-index: 30; width: 250px; padding: 6px;
+  display: grid; gap: 2px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r);
+  box-shadow: 0 12px 32px rgb(16 24 40 / 16%);
+}
+:root[data-theme="dark"] .dl-pop { box-shadow: 0 12px 32px rgb(0 0 0 / 55%); }
+.dl-pop button {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 8px 10px;
+  border: 0; border-radius: var(--r-sm); background: transparent; text-align: left;
+}
+.dl-pop button:hover { background: var(--surface-3); }
+.dl-pop button:focus-visible { outline-offset: -2px; }
+.dl-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
+.dl-text b { font-size: 13.5px; font-weight: 600; }
+.dl-text small { font-size: 12px; color: var(--ink-3); }
+/* file-type tile, shared by the menu and the download cards */
+.ftype {
+  flex: none; display: inline-grid; place-items: center; width: 44px; height: 30px; border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface)); color: var(--accent);
+  font: 700 11.5px/1 var(--mono); letter-spacing: 0.04em;
+}
 
 .status { margin-top: 14px; text-align: center; font-size: 13.5px; color: var(--ink-2); }
 .status:empty { display: none; }
@@ -593,6 +630,26 @@ details.d-sec[open] > summary::before { transform: rotate(45deg); }
 .tooltip b { display: block; font-size: 15px; }
 .tooltip .tt-sub { color: var(--nav-ink-2); }
 
+/* ---------- download ---------- */
+.formats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 28px; }
+.format {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 20px 20px 16px;
+  background: var(--surface); border: 1px solid var(--line-2); border-radius: var(--r-lg); box-shadow: var(--shadow);
+  text-align: left; transition: border-color .15s;
+}
+.format:hover { border-color: var(--ink-3); }
+.format .ftype { margin-bottom: 8px; }
+.format-title { font-size: 16px; font-weight: 700; line-height: 1.3; }
+.format-desc { margin-bottom: 8px; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+.format-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;
+  margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line-2); font-size: 12.5px;
+}
+.format .get { display: inline-flex; align-items: center; gap: 6px; color: var(--accent); font-weight: 600; }
+.format .get svg { flex: none; width: 15px; height: 15px; }
+.format .size { flex: none; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.formats-note { margin-top: 14px; text-align: center; font-size: 13px; color: var(--ink-3); }
+
 /* ---------- cite and footer ---------- */
 .cite { padding-bottom: 72px; }
 .bibtex { position: relative; margin-top: 24px; }
@@ -605,6 +662,14 @@ details.d-sec[open] > summary::before { transform: rotate(45deg); }
 .footer p + p { margin-top: 4px; }
 
 /* ---------- responsive ---------- */
+/* narrower search and incident list keep the toolbar on one line at 1024px */
+@media (max-width: 1100px) {
+  .search input { width: 266px; }
+  #incident { width: 206px; }
+}
+@media (max-width: 860px) {
+  .topnav a { padding: 0 11px; }
+}
 @media (max-width: 900px) {
   .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
@@ -631,14 +696,25 @@ details.d-sec[open] > summary::before { transform: rotate(45deg); }
   .tldr { padding: 16px 18px; }
   .tldr p { font-size: 15.5px; }
   .abstract-label { margin-top: 28px; }
-  .matrix-section, .figures, .cite { padding-top: 52px; }
+  .matrix-section, .figures, .download, .cite { padding-top: 52px; }
   .cite { padding-bottom: 52px; }
+  /* three rows: Expand/Collapse with Download, the search, the incident list with Show IDs */
   .toolbar { margin-top: 20px; }
+  .tool-pair { display: contents; }
   .seg, .search, #incident { flex: 1 1 100%; }
+  .seg { order: 1; flex: 1 1 auto; }
+  .dl-menu { order: 2; }
+  .search { order: 3; }
+  #incident { order: 4; flex: 1 1 0; min-width: 0; }
+  .check { order: 5; flex: 0 0 auto; }
   .seg button { flex: 1; }
   .search input, #incident { width: 100%; }
-  .check { flex: 0 0 auto; }
-  #incident { flex: 1 1 0; min-width: 0; }
+  /* download cards stack, the file-type tile beside the text */
+  .formats { grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 22px; }
+  .format { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; row-gap: 2px; padding: 14px 16px; }
+  .format .ftype { grid-row: span 3; margin: 1px 0 0; }
+  .format-desc { margin-bottom: 0; }
+  .format-foot { margin-top: 6px; padding-top: 0; border-top: 0; }
   .fig { padding: 20px 16px; }
   .mock-text { padding: 14px; font-size: 15px; }
   .detail { width: 100vw; border-left: 0; }
@@ -648,8 +724,22 @@ details.d-sec[open] > summary::before { transform: rotate(45deg); }
 @media (max-width: 720px) {
   body.detail-open { overflow: hidden; }
 }
+@media (max-width: 520px) {
+  .topnav a[data-nav="download"] { display: none; }
+}
+/* the main button on its own row, the other two as an even pair below it */
+@media (max-width: 500px) {
+  .buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 360px; margin-inline: auto; }
+  .buttons .btn-primary { grid-column: 1 / -1; }
+}
 @media (max-width: 400px) {
   .topnav a[data-nav="cite"] { display: none; }
+  .dl-menu > summary { gap: 0; width: var(--control); padding: 0; justify-content: center; }
+  .dl-menu > summary .lbl { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .dl-menu > summary .chev { display: none; }
+}
+@media (max-width: 340px) {
+  .topnav a { padding: 0 6px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

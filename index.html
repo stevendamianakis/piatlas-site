@@ -5,24 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PIAtlas · A construction taxonomy of prompt injection</title>
 <meta name="description" content="PIAtlas organizes prompt-injection attacks by how the injected instruction is constructed: 6 classes, 34 techniques and 131 sub-techniques, each with a worked example.">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="light">
 <meta name="theme-color" content="#1C2840">
 <script>
-  /* Day or night: apply the visitor's saved choice, else the system setting, before the first paint. */
+  /* Day or night: Day unless the visitor chose Night with the switch on an earlier visit.
+     Set before the first paint, so the page never flashes the other mode. */
   (function () {
-    var theme = null;
-    try { theme = localStorage.getItem('piatlas-theme'); } catch (err) { /* storage blocked */ }
-    if (theme !== 'light' && theme !== 'dark') {
-      theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
+    var theme = 'light';
+    try { if (localStorage.getItem('piatlas-theme') === 'dark') theme = 'dark'; } catch (err) { /* storage blocked */ }
     document.documentElement.setAttribute('data-theme', theme);
+    if (theme === 'dark') {
+      document.querySelector('meta[name="color-scheme"]').setAttribute('content', 'dark');
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#080D15');
+    }
   })();
 </script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='1' y='3' width='6.5' height='8' rx='1.6' fill='%234588D8'/%3E%3Crect x='8.75' y='3' width='6.5' height='8' rx='1.6' fill='%23349A82'/%3E%3Crect x='16.5' y='3' width='6.5' height='8' rx='1.6' fill='%239B6FC2'/%3E%3Crect x='1' y='13' width='6.5' height='8' rx='1.6' fill='%23D9773F'/%3E%3Crect x='8.75' y='13' width='6.5' height='8' rx='1.6' fill='%23C49A3C'/%3E%3Crect x='16.5' y='13' width='6.5' height='8' rx='1.6' fill='%23D05A6F'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 <a class="skip" href="#matrix">Skip to the matrix</a>
@@ -285,6 +287,6 @@
 <p id="dl-status" class="sr-only" aria-live="polite"></p>
 
 <script src="taxonomy.js?v=5"></script>
-<script src="app.js?v=5"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>

@@ -47,8 +47,8 @@
   --shadow-lg: -18px 0 44px rgb(16 24 40 / 18%);
 }
 
-/* Night mode. index.html sets data-theme on <html> before the first paint, from the visitor's
- * saved choice or, failing that, the system setting; the Day/Night switch changes it. */
+/* Night mode. index.html sets data-theme on <html> before the first paint: Day by default,
+ * Night only when the visitor chose it with the Day/Night switch on an earlier visit. */
 :root[data-theme="dark"] {
   color-scheme: dark;
   --bg: #0C1119;

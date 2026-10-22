@@ -793,7 +793,6 @@
   // ---------------------------------------------------------------- figure: benchmark coverage heatmap
   const RAMP = ['#cde2fb', '#b7d3f6', '#9ec5f4', '#86b6ef', '#6da7ec', '#5598e7', '#3987e5',
     '#2a78d6', '#256abf', '#1c5cab', '#184f95', '#104281', '#0d366b'];
-  const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
   const hexRGB = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
   const lum = rgb => {
     const [r, g, b] = rgb.map(v => { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
@@ -876,25 +875,20 @@
   function initTheme() {
     const root = document.documentElement;
     const buttons = $$('.theme-switch [data-theme-set]');
+    const scheme = $('meta[name="color-scheme"]');
     const meta = $('meta[name="theme-color"]');
-    const saved = () => {
-      try { return localStorage.getItem('piatlas-theme'); } catch (err) { return null; }
-    };
     const apply = (theme, save) => {
       root.setAttribute('data-theme', theme);
       buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === theme)));
+      if (scheme) scheme.setAttribute('content', theme);
       if (meta) meta.setAttribute('content', theme === 'dark' ? '#080D15' : '#1C2840');
       if (save) {
         try { localStorage.setItem('piatlas-theme', theme); } catch (err) { /* storage blocked: still switch */ }
       }
       renderHeat();
     };
+    // Day is the default whatever the system setting; the switch saves a choice for later visits
     buttons.forEach(b => b.addEventListener('click', () => apply(b.dataset.themeSet, true)));
-    // until the visitor picks a mode, follow the system setting
-    darkQuery.addEventListener('change', ev => {
-      const s = saved();
-      if (s !== 'light' && s !== 'dark') apply(ev.matches ? 'dark' : 'light', false);
-    });
     apply(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light', false);
   }
 

@@ -727,10 +727,10 @@ details.d-sec[open] > summary::before { transform: rotate(45deg); }
 @media (max-width: 520px) {
   .topnav a[data-nav="download"] { display: none; }
 }
-/* the main button on its own row, the other two as an even pair below it */
-@media (max-width: 500px) {
+/* the main button on its own row, an even pair below it, and the code link on its own row */
+@media (max-width: 620px) {
   .buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 360px; margin-inline: auto; }
-  .buttons .btn-primary { grid-column: 1 / -1; }
+  .buttons .btn-primary, .buttons .btn:last-child { grid-column: 1 / -1; }
 }
 @media (max-width: 400px) {
   .topnav a[data-nav="cite"] { display: none; }

@@ -307,8 +307,8 @@ section[id], [data-section] { scroll-margin-top: 16px; }
 .col-jump > :last-child { margin-right: auto; }
 .jump-label { flex: none; margin-right: 2px; font-size: 12.5px; color: var(--ink-3); }
 .col-jump button {
-  flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px 0 4px;
-  border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-size: 12.5px; font-weight: 600;
+  flex: none; display: inline-flex; align-items: center; height: 30px; padding: 0 5px;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--surface);
 }
 .col-jump button:hover { border-color: var(--c); background: var(--c-tint); }
 .col-jump .badge { height: 20px; }
@@ -579,6 +579,7 @@ details.d-sec[open] > summary::before { transform: rotate(45deg); }
 .chip-btn .badge { opacity: 0.45; }
 .chip-btn[aria-pressed="true"] { background: var(--c-tint-2); border-color: var(--c); }
 .chip-btn[aria-pressed="true"] .badge { opacity: 1; }
+.chip-btn[data-cls] { padding: 0 8px; }
 .chip-btn.ghost { padding: 0 14px; color: var(--ink-2); }
 .mock { margin-top: 16px; overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
 .mock-bar {
@@ -596,8 +597,7 @@ details.d-sec[open] > summary::before { transform: rotate(45deg); }
 .heat th { padding: 6px 8px; font-weight: 600; color: var(--ink-2); text-align: left; white-space: nowrap; }
 .heat thead th { vertical-align: bottom; font-size: 12px; }
 .heat thead th.cls { text-align: center; }
-.heat thead th.cls .badge { display: flex; width: max-content; margin: 0 auto 4px; }
-.heat thead th.cls .part { display: block; font-size: 11px; font-weight: 500; color: var(--ink-3); }
+.heat thead th.cls .badge { display: flex; width: max-content; margin: 0 auto; }
 .heat thead th:first-child { width: 24%; }
 .heat th.num, .heat td.n { text-align: right; }
 .heat th.cov, .heat td.cov { text-align: center; }

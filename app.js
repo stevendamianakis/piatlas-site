@@ -736,15 +736,14 @@
     const allSix = ONE_REQUEST.find(r => !r.cls && /all/.test(r.part)).segments.filter(s => s.c);
     const core = ONE_REQUEST.find(r => r.part === 'none').segments.map(s => s.t).join('');
     const entryOf = {};
-    const partOf = {};
     ONE_REQUEST.forEach(r => {
-      if (r.cls) { entryOf[r.cls] = r.entry.replace(/\[\[|\]\]/g, ''); partOf[r.cls] = r.part; }
+      if (r.cls) entryOf[r.cls] = r.entry.replace(/\[\[|\]\]/g, '');
     });
     const active = new Set();
     const chips = $('#builder-chips');
     chips.innerHTML = TAXONOMY.map(c => `
-      <button type="button" class="chip-btn" data-c="${c.id}" data-cls="${c.id}" aria-pressed="false" title="${esc(c.name)}">
-        <span class="badge">${c.id}</span>${esc(partOf[c.id])}</button>`).join('') +
+      <button type="button" class="chip-btn" data-c="${c.id}" data-cls="${c.id}" aria-pressed="false" title="${esc(c.name)}" aria-label="${c.id} ${esc(c.name)}">
+        <span class="badge">${c.id}</span></button>`).join('') +
       '<button type="button" class="chip-btn ghost" data-set="all">All six</button>' +
       '<button type="button" class="chip-btn ghost" data-set="none">Plain request</button>';
 
@@ -814,7 +813,7 @@
   function renderHeat() {
     const ids = TAXONOMY.map(c => c.id);
     const head = `<thead><tr><th scope="col">Source</th><th scope="col" class="num">Templates</th>${TAXONOMY.map(c =>
-      `<th scope="col" class="cls" data-c="${c.id}"><span class="badge">${c.id}</span><span class="part">${esc(c.short)}</span></th>`).join('')}<th scope="col" class="cov">Cov.</th></tr></thead>`;
+      `<th scope="col" class="cls" data-c="${c.id}" title="${esc(c.name)}"><span class="badge">${c.id}</span></th>`).join('')}<th scope="col" class="cov">Cov.</th></tr></thead>`;
     let body = '<tbody>';
     let prev = null;
     BENCHMARKS.rows.forEach((r, ri) => {
@@ -927,7 +926,7 @@
   // ---------------------------------------------------------------- wiring
   renderMatrix();
   jump.innerHTML = '<span class="jump-label">Jump to</span>' + TAXONOMY.map(c =>
-    `<button type="button" data-c="${c.id}" data-jump="${c.id}" title="${esc(c.name)}"><span class="badge">${c.id}</span>${esc(c.short)}</button>`).join('');
+    `<button type="button" data-c="${c.id}" data-jump="${c.id}" title="${esc(c.name)}" aria-label="${c.id} ${esc(c.name)}"><span class="badge">${c.id}</span></button>`).join('');
   jump.addEventListener('click', ev => {
     const b = ev.target.closest('[data-jump]');
     if (!b) return;
